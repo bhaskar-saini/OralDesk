@@ -6,16 +6,17 @@ import PatientDashboard from './pages/PatientDashboard';
 import Patients from './components/admin/Patients'
 import Appointments from './components/admin/Appointments'
 import Calendar from './components/admin/Calendar'
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 const App = () => {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
-      <Route path="/admin/dashboard" element={<AdminDashboard />} />
-      <Route path="/patient/dashboard" element={<PatientDashboard />} />
-      <Route path="/admin/appointments" element={<Appointments></Appointments>}></Route>
-      <Route path="/admin/patients" element={<Patients></Patients>}></Route>
-      <Route path="/admin/calendar" element={<Calendar></Calendar>}></Route>
+      <Route path="/admin/dashboard" element={<ProtectedRoute allowedRoles={["Admin"]}><AdminDashboard/></ProtectedRoute>} />
+      <Route path="/patient/dashboard" element={<ProtectedRoute allowedRoles={["Patient"]}><PatientDashboard/></ProtectedRoute>} />
+      <Route path="/admin/appointments" element={<ProtectedRoute allowedRoles={["Admin"]}><Appointments/></ProtectedRoute>} />
+      <Route path="/admin/patients" element={<ProtectedRoute allowedRoles={["Admin"]}><Patients/></ProtectedRoute>} />
+      <Route path="/admin/calendar" element={<ProtectedRoute allowedRoles={["Admin"]}><Calendar/></ProtectedRoute>} />
     </Routes>
   )
 }
