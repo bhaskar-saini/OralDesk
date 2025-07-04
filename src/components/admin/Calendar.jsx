@@ -1,8 +1,11 @@
 import React from 'react'
+import Sidebar from './Sidebar'
 
 const Calendar = () => {
   return (
-    <div>Calendar</div>
+    <main>
+      <Sidebar/>
+    </main>
   )
 }
 

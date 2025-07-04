@@ -1,8 +1,11 @@
 import React from 'react'
+import Sidebar from './Sidebar'
 
 const Appointments = () => {
   return (
-    <div>Appointments</div>
+    <main>
+      <Sidebar/>
+    </main>
   )
 }
 

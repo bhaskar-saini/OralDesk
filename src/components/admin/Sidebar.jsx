@@ -1,4 +1,4 @@
-import {React,useState} from 'react'
+import {React,useEffect,useState} from 'react'
 import logo from '/logo.svg'
 import {ChevronLeft, ChevronRight, Dashboard, Person, BookOnline, CalendarMonth, Logout} from '@mui/icons-material';
 import { NavLink } from "react-router-dom";
@@ -8,7 +8,14 @@ import { useNavigate } from 'react-router-dom';
 const Sidebar = () => {
   const {logout} = useAuth();
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(() => {
+    const openStatus = localStorage.getItem('isOpen');
+    return openStatus ? JSON.parse(openStatus) : true;
+  });
+
+  useEffect(()=>{
+    localStorage.setItem('isOpen', JSON.stringify(isOpen));
+  }, [isOpen]);
 
   const listItems = [
     {id:'1', name: 'Dashboard', icon: Dashboard, to: '/admin/dashboard'},

@@ -1,8 +1,11 @@
 import React from 'react'
+import Sidebar from './Sidebar'
 
 const Patients = () => {
   return (
-    <div>Patients</div>
+    <main>
+      <Sidebar/>
+    </main>
   )
 }
 
