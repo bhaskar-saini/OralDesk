@@ -25,10 +25,10 @@ const Login = () => {
             setLoading(false);
             if(result){
                 if(result.role === "Admin") {
-                    navigate("/admin");
+                    navigate("/admin/dashboard");
                 }
                 else if(result.role === "Patient") {
-                    navigate("/patient");
+                    navigate("/patient/dashboard");
                 }
             }
             else{
