@@ -3,9 +3,12 @@ import Sidebar from '../components/admin/Sidebar'
 
 const AdminDashboard = () => {
   return (
-    <main>
+    <div className="flex bg-blue-100">
       <Sidebar/>
-    </main>
+      <main>
+        Admin
+      </main>
+    </div>
   )
 }
 

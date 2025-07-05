@@ -3,9 +3,12 @@ import Sidebar from './Sidebar'
 
 const Appointments = () => {
   return (
-    <main>
+    <div className="flex bg-blue-100">
       <Sidebar/>
-    </main>
+      <main>
+        Appointments
+      </main>
+    </div>
   )
 }
 

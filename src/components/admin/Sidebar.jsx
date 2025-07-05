@@ -78,8 +78,8 @@ const Sidebar = () => {
         <button
           onClick={handleLogout}
           className="
-            flex items-center gap-3 p-3 rounded-lg
-            text-white hover:bg-red-700 cursor-pointer
+            flex items-center gap-3 p-3 rounded-lg w-full
+            text-white hover:bg-blue-300 cursor-pointer
             transition-colors duration-200 ease-in-out
           "
         >
