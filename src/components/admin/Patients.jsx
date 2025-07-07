@@ -15,9 +15,14 @@ const Patients = () => {
       if (storedData) {
         setPatients(JSON.parse(storedData));
       }
+      else{
+        setPatients([]);
+      }
     }
-    catch(err){
-      console.error(err);
+    catch(e) {
+      console.error("Error parsing patients:",e);
+      localStorage.removeItem("patients");
+      setPatients([]);
     }
   },[]);
 
@@ -36,7 +41,7 @@ const Patients = () => {
   const getNextId = () => {
     const storedId = localStorage.getItem("idCounter");
     const currentId = storedId ? parseInt(storedId) : 1;
-    localStorage.setItem("idCounter", currentId + 1);
+    localStorage.setItem("idCounter", (currentId + 1).toString());
     return currentId.toString();
   };
   const handleSavePatient = (data) => {
@@ -48,7 +53,7 @@ const Patients = () => {
     }
     else{
       const newPatient = { id: getNextId(), ...data };
-      const updated = [newPatient, ...patients];
+      updated = [newPatient, ...patients];
     }
     saveInStorage(updated);
     handleModalClose();
@@ -61,7 +66,7 @@ const Patients = () => {
 
   const handleDelete = (id) => {
     const updated = patients.filter(p => p.id !== id);
-    savePatientsToStorage(updated);
+    saveInStorage(updated);
   };
 
   return (
@@ -83,7 +88,7 @@ const Patients = () => {
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-indigo-500 text-white">
               <tr>
-                <th className="p-3 text-left">ID</th>
+                <th className="p-3 text-left">PID</th>
                 <th className="p-3 text-left">Name</th>
                 <th className="p-3 text-left">DOB</th>
                 <th className="p-3 text-left">Contact</th>
@@ -111,7 +116,7 @@ const Patients = () => {
                     <td className="p-3 flex gap-2">
                       <button
                         onClick={() => handleEdit(p)}
-                        className="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded text-sm
+                        className="bg-cyan-300 hover:bg-cyan-400 text-black px-3 py-1 rounded text-sm
                          font-medium transition duration-200 ease-in-out transform hover:scale-105"
                       >
                         Edit
@@ -134,7 +139,7 @@ const Patients = () => {
           isOpen={isModalOpen} 
           onClose={handleModalClose}
           onSave={handleSavePatient}
-          editPatient = {editPatient} 
+          editPatient={editPatient} 
         />
       </main>
     </div>
