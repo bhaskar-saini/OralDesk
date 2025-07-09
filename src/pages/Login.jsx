@@ -57,8 +57,8 @@ const Login = () => {
             </div>
             <div id='right' className="w-1/2 flex items-center justify-center bg-white">
                 <form onSubmit={handleSubmit} className="w-full max-w-sm px-8 flex flex-col gap-4">
-                    <div className="bg-blue-400 rounded-b-full">
-                        <h2 className="text-3xl font-extrabold text-center mb-2 text-white">Welcome To Oral<span className="text-cyan-300">Desk</span></h2>
+                    <div className="bg-blue-400 p-4 flex items-center justify-center rounded-4xl">
+                        <h2 className="text-3xl font-extrabold text-center text-white">Welcome To Oral<span className="text-cyan-300">Desk</span></h2>
                     </div>
                     <h2 className="text-2xl font-bold text-center mb-2 text-blue-400">Sign in . Manage . Smile</h2>
                     <input

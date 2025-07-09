@@ -35,9 +35,11 @@ const Patients = () => {
     setEditPatient(null);
     setIsModalOpen(true);
   };
+
   const handleModalClose = () => {
     setIsModalOpen(false);
   };
+  
   const getNextId = () => {
     const storedId = localStorage.getItem("idCounter");
     const currentId = storedId ? parseInt(storedId) : 1;
@@ -52,11 +54,12 @@ const Patients = () => {
       );
     }
     else{
-      const newPatient = { id: getNextId(), ...data };
+      const newPatient = {...data, id: getNextId() };
       updated = [newPatient, ...patients];
     }
     saveInStorage(updated);
     handleModalClose();
+    alert("Data Saved!")
   };
 
   const handleEdit = (patient) => {
