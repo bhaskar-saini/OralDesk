@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { AttachFile } from "@mui/icons-material";
 
-const AppointmentModal = ({isOpen, onClose, onSave, editingAppointment, initial}) => {
+const AppointmentModal = ({isOpen, onClose, onSave, editingAppointment, initial, patients}) => {
     const[appointmentData, setAppointmentData] = useState({
         pid: '',
         title: '',
@@ -96,9 +96,12 @@ const AppointmentModal = ({isOpen, onClose, onSave, editingAppointment, initial}
         e.preventDefault();
         const dataToSave = {
             ...appointmentData,
-            pid: appointmentData.pid,
         };
+        if (editingAppointment && editingAppointment.id) {
+            dataToSave.id = editingAppointment.id;
+        }
         onSave(dataToSave);
+        onClose();
     };
 
     return (
@@ -118,7 +121,6 @@ const AppointmentModal = ({isOpen, onClose, onSave, editingAppointment, initial}
                     <button
                     form="appointmentForm"
                     type="submit"
-                    onSubmit={handleSubmit}
                     className="px-3 py-1 rounded-3xl text-xs font-semibold text-white bg-green-500 hover:bg-green-600 cursor-pointer
                     transition-colors duration-200 ease-in-out">
                         {editingAppointment ? 'SAVE' : 'CREATE'}
@@ -127,21 +129,15 @@ const AppointmentModal = ({isOpen, onClose, onSave, editingAppointment, initial}
                 </div>
                 <h2 className="font-bold text-gray-800 mt-1 mb-3 text-center">Enter Appointment Details</h2>
 
-                <form id="appointmentForm" className="px-5 pb-5 flex flex-col gap-3">
+                <form id="appointmentForm" onSubmit={handleSubmit} className="px-5 pb-5 flex flex-col gap-3">
                     <div className="flex items-center">
                         <label htmlFor="pid" className="block w-1/3">PID</label>
-                        <input
-                         type="text"
-                         id="pid"
-                         name="pid"
-                         value={appointmentData.pid}
-                         onChange={handleChange}
-                         className="w-2/3 px-2 py-1 border border-gray-300 rounded shadow-sm focus:outline-none
-                         focus:ring-1 focus:ring-gray-500"
-                         placeholder="Enter Patient Id"
-                         readOnly={editingAppointment && !initial}
-                         required
-                        />
+                        <select name="pid" value={appointmentData.pid} onChange={handleChange}>
+                            <option value="">Select Patient</option>
+                            {patients.map(p => (
+                                <option key={p.id} value={p.id}>{p.patientName} (PID: {p.id})</option>
+                            ))}
+                        </select>
                     </div>
                     <div className="flex items-center">
                         <label htmlFor="title" className="block w-1/3">Title</label>
@@ -237,7 +233,6 @@ const AppointmentModal = ({isOpen, onClose, onSave, editingAppointment, initial}
                                 onChange={handleChange}
                                 className="w-2/3 px-2 py-1 border border-gray-300 rounded shadow-sm focus:outline-none
                                 focus:ring-1 focus:ring-gray-500"
-                                required
                                 />
                             </div>
                             <div className="flex items-center">

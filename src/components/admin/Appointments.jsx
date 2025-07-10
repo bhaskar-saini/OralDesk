@@ -10,6 +10,8 @@ const Appointments = () => {
   const [initialCreation, setInitialCreation] = useState(true);
   const [patients,setPatients] = useState([]);
 
+  // localStorage.clear();
+
   useEffect(() => {
     const storedData = localStorage.getItem("appointments");
     try{
@@ -58,7 +60,7 @@ const Appointments = () => {
   };
   
   const handleSave = (data) => {
-    let updated;
+    let updated  = [];
     if (data.id) {
       updated = appointments.map((app) => (
         app.id === data.id ? data : app
@@ -67,8 +69,8 @@ const Appointments = () => {
       const newId = Date.now().toString();
       const newData = { ...data, id: newId };
       updated = [...appointments, newData];
-      setInitialCreation(false);
     }
+    setInitialCreation(false);
     saveInStorage(updated);
     handleModalClose();
     alert("Data Saved!")
@@ -84,6 +86,10 @@ const Appointments = () => {
     const updated = appointments.filter(ap => ap.id !== pid);
     saveInStorage(updated);
   };
+
+  const sortedAppointments = [...appointments].sort(
+    (a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate)
+  );
 
   return (
     <div className="flex bg-blue-100">
@@ -108,19 +114,20 @@ const Appointments = () => {
                 <th className="p-3 text-left">Name</th>
                 <th className="p-3 text-left">DOB</th>
                 <th className="p-3 text-left">Appointment Date</th>
+                <th className="p-3 text-left">Next Appointment</th>
                 <th className="p-3 text-left">Status</th>
                 <th className="p-3 text-left">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {appointments.length === 0 ? (
+              {sortedAppointments.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="p-4 text-center text-gray-500">
                     No Appointment found.
                   </td>
                 </tr>
               ) : (
-                appointments.map((ap) => {
+                sortedAppointments.map((ap) => {
                   const patient = patients.find(p => p.id === ap.pid);
                   const patientName = patient ? patient.patientName : 'N/A';
                   const patientDob = patient ? patient.dob : 'N/A';
@@ -131,6 +138,7 @@ const Appointments = () => {
                       <td className="p-3">{patientName}</td>
                       <td className="p-3">{patientDob}</td>
                       <td className="p-3">{new Date(ap.appointmentDate).toLocaleString()}</td>
+                      <td className="p-3">{ap.nextDate ? new Date(ap.nextDate).toLocaleString() : '—'}</td>
                       <td className="p-3">{ap.status}</td>
                       <td className="p-3 flex gap-2">
                         <button
@@ -161,6 +169,7 @@ const Appointments = () => {
           onSave={handleSave}
           editingAppointment={editInfo}
           initial={initialCreation}
+          patients={patients}
         />
       </main>
     </div>

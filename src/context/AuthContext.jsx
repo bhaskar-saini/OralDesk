@@ -3,9 +3,9 @@ import { createContext, useContext, useEffect, useState } from 'react';
 const AuthContext = createContext();
 
 const mockUsers = [
-  { id: "1", role: "Admin", email: "admin@entnt.in", password: "admin123" },
-  { id: "2", role: "Patient", email: "john@entnt.in", password: "patient123", patientId: "p1" },
-  { id: "3", role: "Patient", email: "patient2@entnt.in", password: "patient123", patientId: "p2" }
+  { id: "1000000", role: "Admin", email: "admin@entnt.in", password: "admin123" },
+  { id: "1", role: "Patient", email: "john@entnt.in", password: "patient123", patientId: "p1" },
+  { id: "2", role: "Patient", email: "patient2@entnt.in", password: "patient123", patientId: "p2" }
 ];
 
 export const AuthProvider = ({children}) => {
