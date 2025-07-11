@@ -10,20 +10,17 @@ const PatientDashboard = () => {
     const allAppointments = JSON.parse(localStorage.getItem("appointments")) || [];
     const allPatients = JSON.parse(localStorage.getItem("patients")) || [];
 
-    const filtered = allAppointments.filter((a) => a.pid === user?.id);
-    const info = allPatients.find((p) => p.id === user?.id);
+    const filtered = allAppointments.filter((a) => String(a.pid) === String(user?.id));
+    const info = allPatients.find((p) => String(p.id) === String(user?.id));
 
     setAppointments(filtered);
     setPatient(info);
   }, [user]);
 
+
   const upcoming = appointments.filter(
     (a) => new Date(a.appointmentDate) > new Date()
   ).sort((a, b) => new Date(a.appointmentDate) - new Date(b.appointmentDate));
-
-  const history = appointments.filter(
-    (a) => new Date(a.appointmentDate) <= new Date()
-  ).sort((a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate));
 
   const reconstructDataUrl = (file) =>
     file?.base64 && file?.type
@@ -57,7 +54,7 @@ const PatientDashboard = () => {
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <div className="bg-white rounded-lg shadow p-4 mb-6 max-w-md">
         <h2 className="text-xl font-semibold text-blue-700 mb-2">
           Upcoming Appointments
         </h2>
@@ -76,15 +73,15 @@ const PatientDashboard = () => {
         )}
       </div>
 
-      <div className="bg-white rounded-lg shadow p-4 mb-6">
+      <div className="bg-white rounded-lg shadow p-4 mb-6 max-w-md">
         <h2 className="text-xl font-semibold text-blue-700 mb-2">
           Appointment History
         </h2>
-        {history.length === 0 ? (
+        {upcoming.length === 0 ? (
           <p className="text-gray-500">No appointment history available.</p>
         ) : (
           <div className="space-y-4">
-            {history.map((a) => (
+            {upcoming.map((a) => (
               <div key={a.id} className="border-b pb-3">
                 <p><strong>Date:</strong> {new Date(a.appointmentDate).toLocaleString()}</p>
                 <p><strong>Status:</strong> {a.status}</p>

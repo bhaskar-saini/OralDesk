@@ -1,93 +1,144 @@
 import React, { useEffect, useState } from "react";
-import Calendar from "react-calendar";
-import 'react-calendar/dist/Calendar.css';
 import Sidebar from "./Sidebar";
 
 const AppCalendar = () => {
   const [appointments, setAppointments] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(new Date());
   const [patients, setPatients] = useState([]);
+  const [viewMode, setViewMode] = useState("month");
+
+  const today = new Date();
+  const currentMonth = today.getMonth();
+  const currentYear = today.getFullYear();
 
   useEffect(() => {
-    const stored = localStorage.getItem("appointments");
-    if (stored) {
-      setAppointments(JSON.parse(stored));
-    }
+    const storedAppointments = JSON.parse(localStorage.getItem("appointments")) || [];
+    const storedPatients = JSON.parse(localStorage.getItem("patients")) || [];
+    setAppointments(storedAppointments);
+    setPatients(storedPatients);
   }, []);
 
-  useEffect(() => {
-    const stored = localStorage.getItem("patients");
-    if (stored) {
-      setPatients(JSON.parse(stored));
+  const getPatientName = (pid) =>
+    patients.find((p) => p.id === pid)?.patientName || `PID: ${pid}`;
+
+  const groupAppointmentsByDate = () => {
+    const grouped = {};
+    appointments.forEach((a) => {
+      const dates = [a.appointmentDate];
+      if (a.nextDate) dates.push(a.nextDate);
+      dates.forEach((d) => {
+        const key = new Date(d).toDateString();
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push({
+          ...a,
+          date: d,
+          patientName: getPatientName(a.pid),
+        });
+      });
+    });
+    return grouped;
+  };
+
+  const appointmentsByDate = groupAppointmentsByDate();
+
+  const generateMonthView = () => {
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const totalDays = lastDay.getDate();
+    const startDay = firstDay.getDay();
+    const days = [];
+
+    for (let i = 0; i < startDay; i++) {
+      days.push(null);
     }
-  }, []);
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+    for (let d = 1; d <= totalDays; d++) {
+      days.push(new Date(currentYear, currentMonth, d));
+    }
+    return days;
   };
 
-  const appointmentsOnSelectedDate = appointments.filter(
-    (a) =>
-      new Date(a.appointmentDate).toDateString() === selectedDate.toDateString() ||
-      (a.nextDate && new Date(a.nextDate).toDateString() === selectedDate.toDateString())
-  );
-
-  const getAppointmentCountForDate = (date) => {
-    return appointments.reduce((count, a) => {
-      const apptDateMatch = new Date(a.appointmentDate).toDateString() === date.toDateString();
-      const nextDateMatch = a.nextDate && new Date(a.nextDate).toDateString() === date.toDateString();
-      return count + (apptDateMatch ? 1 : 0) + (nextDateMatch ? 1 : 0);
-    }, 0);
+  const generateWeekView = () => {
+    const weekStart = new Date(today);
+    weekStart.setDate(today.getDate() - today.getDay()); // set to Sunday
+    const days = [];
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(weekStart);
+      day.setDate(weekStart.getDate() + i);
+      days.push(day);
+    }
+    return days;
   };
+
+  const calendarDays = viewMode === "month" ? generateMonthView() : generateWeekView();
 
   return (
-    <div className="flex h-screen bg-blue-100">
+    <div className="flex min-h-screen bg-blue-100">
       <Sidebar />
-      <main className="flex-1 p-6 overflow-auto">
-        <h1 className="text-2xl font-bold mb-4 text-gray-700">Appointment Calendar</h1>
+      <main className="flex-1 p-6 hidden sm:block">
+        <div className="flex items-center justify-between mb-4 ">
+          <h1 className="text-2xl font-bold text-gray-800">
+            Appointment Calendar - {today.toLocaleString("default", { month: "long" })}
+          </h1>
+          <div className="space-x-2">
+            <button
+              onClick={() => setViewMode("week")}
+              className={`px-3 py-1 rounded font-medium ${
+                viewMode === "week"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-blue-600 border"
+              }`}
+            >
+              Weekly
+            </button>
+            <button
+              onClick={() => setViewMode("month")}
+              className={`px-3 py-1 rounded font-medium ${
+                viewMode === "month"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-blue-600 border"
+              }`}
+            >
+              Monthly
+            </button>
+          </div>
+        </div>
 
-        <Calendar
-          onChange={handleDateChange}
-          value={selectedDate}
-          tileContent={({ date, view }) =>
-            view === 'month' && getAppointmentCountForDate(date) > 0 ? (
-              <div className="text-[10px] text-white bg-red-500 w-3 h-3 rounded-full flex items-center justify-center mx-auto">
-                {getAppointmentCountForDate(date)}
-              </div>
-            ) : null
-          }
-        />
+        <div className="grid grid-cols-7 mb-2 text-sm font-semibold text-center text-gray-600">
+          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+            <div key={day}>{day}</div>
+          ))}
+        </div>
 
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-2">
-            Appointments on {selectedDate.toDateString()}
-          </h2>
-          {appointmentsOnSelectedDate.length === 0 ? (
-            <p className="text-gray-500">No appointments found.</p>
-          ) : (
-            <div className="space-y-3">
-              {appointmentsOnSelectedDate.map((a) => {
-                const isFollowUp = a.nextDate && new Date(a.nextDate).toDateString() === selectedDate.toDateString();
-                const time = isFollowUp ? a.nextDate : a.appointmentDate;
-                const patient = patients.find(p => p.id === a.pid)?.patientName || `PID: ${a.pid}`;
+        <div className="grid grid-cols-7 gap-2">
+          {calendarDays.map((date, idx) => {
+            if (!date) {
+              return <div key={idx} className="h-25 bg-transparent" />;
+            }
 
-                return (
+            const key = date.toDateString();
+            const dayAppointments = appointmentsByDate[key] || [];
+
+            return (
+              <div
+                key={key}
+                className="bg-white rounded-lg shadow p-2 h-25 overflow-y-auto flex flex-col"
+              >
+                <div className="text-xs font-bold text-gray-700 mb-1">
+                  {date.getDate()}
+                </div>
+                {dayAppointments.map((a, i) => (
                   <div
-                    key={`${a.id}-${isFollowUp ? 'next' : 'main'}`}
-                    className="bg-white max-w-2xs rounded-lg shadow-sm px-4 py-3 flex items-center justify-between"
+                    key={i}
+                    className="bg-blue-100 text-xs rounded px-1 py-0.5 mb-1"
                   >
-                    <div className="flex flex-col md:flex-row md:items-center md:gap-6">
-                      <div className="text-sm text-gray-700 font-semibold">{patient}</div>
-                      <div className="text-sm text-blue-600">{a.title}</div>
+                    <div>
+                      <strong>{a.pid}</strong> - {a.patientName}
                     </div>
-                    <div className="text-sm text-gray-600 font-medium">
-                      {new Date(time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </div>
+                    <div>{a.title}</div>
                   </div>
-                );
-              })}
-            </div>
-          )}
+                ))}
+              </div>
+            );
+          })}
         </div>
       </main>
     </div>

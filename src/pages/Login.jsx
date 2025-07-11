@@ -39,7 +39,7 @@ const Login = () => {
 
     return(
         <div id='main' className="flex h-screen bg-blue-400 text-gray-800">
-            <div id='left' className="w-1/2 p-8 flex flex-col justify-between">
+            <div id='left' className="w-1/2 p-8 flex flex-col justify-between max-sm:hidden">
                 <div id='upper'>
                     <div className="flex items-center gap-2">
                         <img src={logo} alt="logo" className="w-7 h-7" />
@@ -55,7 +55,7 @@ const Login = () => {
                     <img src={dentistLogin} alt="Dentist Login" className="max-h-[80%] w-auto object-contain mb-10  rounded-3xl shadow-2xl"/>
                 </div>
             </div>
-            <div id='right' className="w-1/2 flex items-center justify-center bg-white">
+            <div id='right' className="w-1/2 flex items-center justify-center bg-white max-sm:w-full">
                 <form onSubmit={handleSubmit} className="w-full max-w-sm px-8 flex flex-col gap-4">
                     <div className="bg-blue-400 p-4 flex items-center justify-center rounded-4xl">
                         <h2 className="text-3xl font-extrabold text-center text-white">Welcome To Oral<span className="text-cyan-300">Desk</span></h2>

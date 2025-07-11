@@ -32,7 +32,7 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className={`h-screen bg-blue-400 text-white flex flex-col p-4 transition-all duration-300
+    <aside className={`min-h-screen bg-blue-400 text-white flex flex-col p-4 transition-all duration-300
      ease-in-out ${isOpen ? 'w-54' : 'w-20'}`}>
       <div id="top" className={`flex ${isOpen ? 'justify-between' : 'justify-center'} items-center mb-6`}>
         <div className={`flex items-center gap-2 ${!isOpen && 'hidden'}`}>
@@ -43,7 +43,7 @@ const Sidebar = () => {
         </div>
         <button onClick={toggleSidebar} className={`
             p-1 rounded-full hover:bg-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-200
-            ${isOpen ? 'justify-end' : 'justify-center'}
+            ${isOpen ? 'justify-end' : 'justify-center'} md:block hidden
           `}
         >
           {isOpen ? (

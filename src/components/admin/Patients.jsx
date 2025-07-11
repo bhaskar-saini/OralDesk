@@ -87,7 +87,7 @@ const Patients = () => {
           Add Patient
         </button>
 
-        <div className="mt-5 overflow-x-auto mx-4">
+        <div className="mt-5 overflow-x-auto mx-4 sm:block hidden">
           <table className="w-full bg-white shadow-md rounded-lg overflow-hidden">
             <thead className="bg-indigo-500 text-white">
               <tr>
