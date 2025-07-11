@@ -4,8 +4,7 @@ A fully responsive **Dental Clinic Management** system built with **React**, **T
 
 ### 🚀 Live Demo
 
-[🔗 Click here to view the live site](https://your-deployed-url.vercel.app)  
-*(Replace with your actual Vercel/Netlify URL)*
+https://oraldesk.vercel.app/
 
 ---
 
